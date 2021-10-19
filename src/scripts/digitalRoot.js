@@ -1,7 +1,11 @@
 class DigitalRoot {
-    constructor(inputNode) {
-        this.inputNode = inputNode;
-        this.staticPattern = [
+    #staticPattern;
+    #dynamicPattern;
+    #results;
+
+    constructor(input = null) {
+        this.input = input;
+        this.#staticPattern = [
             {
                 regex: /^,/,
                 replace: ''
@@ -15,7 +19,7 @@ class DigitalRoot {
                 replace: ''
             }
         ];
-        this.dynamicPattern = [
+        this.#dynamicPattern = [
             {
                 regex: /-{2,}/,
                 replace: '-'
@@ -37,7 +41,7 @@ class DigitalRoot {
                 replace: '$1'
             }
         ];
-        this.result = {};
+        this.#results = {};
         this.errors = {};
     }
 
@@ -47,10 +51,10 @@ class DigitalRoot {
      * @description it's validate in two pattern static and dynamic and return only string of numbers
     */
     #validateInput(value) {
-        let patterns = this.staticPattern;
+        let patterns = this.#staticPattern;
 
         if (/^\d+-/.test(value)) {
-            patterns = this.dynamicPattern;
+            patterns = this.#dynamicPattern;
         }
 
         return patterns
@@ -62,7 +66,7 @@ class DigitalRoot {
      * @returns {Object}
      * @description any number converted to digital root; as like -> 56; 5 + 6 = 11; 1 + 1 = 2;
     */
-    #digitalRoot(num) {
+    #getDigitalRoot(num) {
         if (num === undefined) {
             return {};
         }
@@ -85,7 +89,7 @@ class DigitalRoot {
 
         if (rootObj.result > 9) {
             // if result is greater then 9 then again split the number
-            const splitResult = this.#digitalRoot(rootObj.result);
+            const splitResult = this.#getDigitalRoot(rootObj.result);
             rootObj.result = splitResult.result;
             rootObj.calculation += splitResult.calculation; // join the new calculation string with previous calculation
 
@@ -122,7 +126,7 @@ class DigitalRoot {
      * @description split the calculation into 2D array and return an object with two props
     */
     #getCalculation(number) {
-        const digitalRootObj = this.#digitalRoot(number);
+        const digitalRootObj = this.#getDigitalRoot(number);
         const getCalculationAsArr = digitalRootObj.calculation.split(';');
         const calculationSplitToArr = getCalculationAsArr.reduce((arr, cal) => {
             cal && arr.push(cal.split('='));
@@ -196,7 +200,7 @@ class DigitalRoot {
      * @returns {object} state results
      * @description it's modify the result object by user input
      */
-    #parseNumbers(number) {
+    #parseToObject(number) {
         let isDynamicNumbers = false;
 
         // if number is dynamic range
@@ -207,7 +211,7 @@ class DigitalRoot {
                 number = this.#calculateRange(+start, +end, +cal, operator);
                 isDynamicNumbers = true;
             } else {
-                return this.results;
+                return this.#results;
             }
         }
 
@@ -224,35 +228,56 @@ class DigitalRoot {
                 return multiNumberObj;
             }, {})
 
-            this.results = newResults;
+            this.#results = newResults;
 
-            return this.results;
+            return this.#results;
         }
 
 
         number = number.replace(/,/, '');
-        this.results = {} // delete the previous input number
+        this.#results = {} // delete the previous input number
 
-        this.results[number] = this.#getCalculation(number);
+        this.#results[number] = this.#getCalculation(number);
 
-        return this.results;
+        return this.#results;
     }
 
     /**
+     * Async method
      * @callback callback
-     * @description send the state results
+     * @description send the state results in input event listener
     */
-    runEvent(callback) {
-        this.inputNode.addEventListener('input', (event) => {
-            // validate the user input only valid number
-            const value = this.#validateInput(event.target.value);
-            event.target.value = value; // assign the validate value to the input value
+    runInputEvent(callback) {
+        if (typeof this.input === 'object') {
+            this.input.addEventListener('input', (event) => {
+                // validate the user input only valid number
+                const value = this.#validateInput(event.target.value);
+                event.target.value = value; // assign the validate value to the input value
 
-            // get the digital root of value
-            const parsedObject = this.#parseNumbers(value);
+                // get the digital root of value
+                const parsedObject = this.#parseToObject(value);
 
-            callback(parsedObject);
-        })
+                callback(parsedObject);
+            })
+
+            return
+        }
+
+        callback(null);
+    }
+
+    /**
+     * @returns {string}
+     * @description it's return the digital root object if the argument input type will be string
+     */
+    getObject() {
+        if (typeof this.input === 'string') {
+            const validateNumber = this.#validateInput(this.input);
+
+            return this.#parseToObject(validateNumber);
+        }
+
+        return null;
     }
 }
 
