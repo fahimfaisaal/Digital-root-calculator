@@ -1,10 +1,12 @@
 import DigitalRoot from './scripts/digitalRoot';
+import Utility from './scripts/utility';
 import './styles/style.scss';
 
+const { $, createElement } = Utility;
 
-const input = document.getElementById('inputNumber');
-const digitalRoot = new DigitalRoot(input);
+const inputNode = $('#inputNumber');
+const digitalRoot = new DigitalRoot(inputNode);
 
-digitalRoot.runEvent(object => {
-    console.log(object)
-})
+const el = createElement('h1', { class: 'newClass', id: 'newId' }, 'Hello')
+
+document.body.appendChild(el)
