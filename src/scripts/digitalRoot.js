@@ -1,7 +1,12 @@
+import DisplayResults from './displayResult';
+import Utility from './utility';
+
+const { $ } = Utility;
 class DigitalRoot {
     #staticPattern;
     #dynamicPattern;
     #results;
+    #resultNode;
 
     constructor(input = null) {
         this.input = input;
@@ -42,6 +47,7 @@ class DigitalRoot {
             }
         ];
         this.#results = {};
+        this.#resultNode = $('#results-wrapper');
         this.errors = {};
     }
 
@@ -71,7 +77,7 @@ class DigitalRoot {
             return {};
         }
 
-        num = num.replace(/\./g, '');
+        num = num.replace(/\./g, ''); // replace all dots for floating number
 
         const splitNum = [...("" + BigInt(num))]; // split number to arr of string
         const rootObjStruct = { result: 0n, calculation: '' };
@@ -257,7 +263,20 @@ class DigitalRoot {
                 // get the digital root of value
                 const parsedObject = this.#parseToObject(value);
 
-                callback(parsedObject);
+                // create the instance of DisplayResults class
+                const display = new DisplayResults(parsedObject);
+                const markup = display.generateMarkup(); // generate the markup via parsed object
+
+                if ("" in parsedObject) {
+                    this.#resultNode.innerHTML = '';
+                } else {
+                    this.#resultNode.innerHTML =
+                        'rangeError' in this.errors ?
+                        `<h4 class="error">${this.errors.rangeError}</h4>`
+                        : markup;
+                }
+                
+               typeof callback === 'function' && callback(parsedObject, markup);
             })
 
             return
@@ -273,8 +292,11 @@ class DigitalRoot {
     getObject() {
         if (typeof this.input === 'string') {
             const validateNumber = this.#validateInput(this.input);
+            const parseObject = this.#parseToObject(validateNumber);
+            const display = new DisplayResults(parseObject);
+            const markup = display.generateMarkup();
 
-            return this.#parseToObject(validateNumber);
+            return [parseObject, markup];
         }
 
         return null;
