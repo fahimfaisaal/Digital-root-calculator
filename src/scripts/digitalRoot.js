@@ -221,6 +221,7 @@ class DigitalRoot {
             }
         }
 
+
         // if input multiple numbers
         if (this.#isMultipleNumber(number)) {
             const splitNumbers = number.split(',');
@@ -239,6 +240,7 @@ class DigitalRoot {
             return this.#results;
         }
 
+        'rangeError' in this.errors && delete this.errors.rangeError;
 
         number = number.replace(/,/, '');
         this.#results = {} // delete the previous input number
