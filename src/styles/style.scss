@@ -8,16 +8,30 @@
 :root {
   --primary-color: #54a0ff;
   --secondary-color: #0bb6ab;
+  --scrollbar-color: rgba(197, 197, 197, 0.4);
+  --error-color: #d63031;
+}
+
+body {
+  background-color: #2f3542;
 }
 
 input {
   border: none;
+  background: transparent;
 
   &:focus {
     outline: none;
   }
 }
 
-@import "container";
-@import "heading";
-@import "input";
+svg {
+  width: 100%;
+}
+
+@import "./partials/fonts"; // fonts
+@import "./partials/container";
+@import "./partials/heading";
+@import "./partials/input";
+@import "./partials/results";
+@import "./partials/responsive";
