@@ -78,7 +78,6 @@ class DigitalRoot {
         }
 
         num = num.replace(/\./g, ''); // replace all dots for floating number
-
         const splitNum = [...("" + BigInt(num))]; // split number to arr of string
         const rootObjStruct = { result: 0n, calculation: '' };
 
@@ -147,6 +146,13 @@ class DigitalRoot {
     }
 
     /**
+     * @description remove the rangeError key from error object if exist
+     */
+    #removeError() {
+        'rangeError' in this.errors && delete this.errors.rangeError;
+    }
+
+    /**
      * @param {number} start 
      * @param {number} end 
      * @param {number} cal 
@@ -158,6 +164,7 @@ class DigitalRoot {
         const numbers = [];
 
         cal ||= 1;
+        [start, end, cal] = [BigInt(start), BigInt(end), BigInt(cal)]; // converted to BigInt
 
         if (end < start || start === end) {
             this.errors.rangeError = 'Please input the ascending range';
@@ -194,7 +201,7 @@ class DigitalRoot {
             }
         }
 
-        'rangeError' in this.errors && delete this.errors.rangeError;
+        this.#removeError();
 
         actions[operator]();
 
@@ -213,6 +220,7 @@ class DigitalRoot {
         if (/^\d+-/.test(number)) {
             const [start, end, cal] = number.split(/[*+/^-]/g);
             const [, operator] = number.split(/\d+/).filter(item => item !== '');
+            
             if (start && end) {
                 number = this.#calculateRange(+start, +end, +cal, operator);
                 isDynamicNumbers = true;
@@ -240,7 +248,7 @@ class DigitalRoot {
             return this.#results;
         }
 
-        'rangeError' in this.errors && delete this.errors.rangeError;
+        this.#removeError();
 
         number = number.replace(/,/, '');
         this.#results = {} // delete the previous input number
