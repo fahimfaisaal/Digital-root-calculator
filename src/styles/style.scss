@@ -5,15 +5,16 @@
   box-sizing: border-box;
 }
 
-:root {
-  --primary-color: #54a0ff;
-  --secondary-color: #0bb6ab;
-  --scrollbar-color: rgba(197, 197, 197, 0.4);
-  --error-color: #d63031;
-}
+$colors: (
+  body: hsl(221, 17%, 22%),
+  primary: hsl(213, 100%, 66%),
+  secondary: hsl(176, 89%, 38%),
+  scrollbar: hsla(0, 0%, 77%, 0.4),
+  error: hsl(360, 67%, 51%),
+);
 
 body {
-  background-color: #2f3542;
+  background-color: map-get($colors, body);
 }
 
 input {

@@ -15,7 +15,7 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: var(--scrollbar-color);
+    background-color: map-get($colors, "scrollbar");
     border-radius: 20px;
   }
 }
@@ -31,7 +31,7 @@
     text-align: center;
     padding: 5px;
 
-    background-color: var(--primary-color);
+    background-color: map-get($colors, primary);
     color: #ffffff;
     letter-spacing: 1.5px;
   }
@@ -54,12 +54,12 @@
     p {
       padding: $padding 5px;
       font-size: 18px;
-      border: 1px solid var(--secondary-color);
+      border: 1px solid map-get($colors, secondary);
     }
   }
 
   &-footer {
-    background-color: var(--secondary-color);
+    background-color: map-get($colors, secondary);
   }
 }
 
@@ -69,6 +69,6 @@
 
 .error {
   font-size: 50px;
-  color: var(--error-color);
+  color: map-get($colors, error);
   font-family: "orange juice";
 }
