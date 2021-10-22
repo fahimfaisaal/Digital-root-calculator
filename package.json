@@ -23,6 +23,7 @@
     "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "^4.0.0",
     "css-loader": "^6.4.0",
+    "gsap": "^3.8.0",
     "html-loader": "^2.1.2",
     "html-webpack-plugin": "^5.4.0",
     "image-minimizer-webpack-plugin": "^2.2.0",

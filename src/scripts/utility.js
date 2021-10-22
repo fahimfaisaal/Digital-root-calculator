@@ -1,3 +1,6 @@
+import { gsap } from "gsap";
+
+const { set } = gsap;
 class Utility {
     /**
      * @param {string} cssSelector 
@@ -40,6 +43,27 @@ class Utility {
         }
 
         return tag;
+    }
+
+    /**
+     * @param {DOM Node} paths 
+     * @param {number} offset only 0
+     * @returns undefined
+     */
+    static setStrokeDash([...paths], offset) {
+        if (paths.length > 0) {
+            const path = paths.pop();
+            const length = path.getTotalLength();
+            const props = {
+                strokeDasharray: length,
+                strokeDashoffset: offset === 0 ? offset : length
+            }
+
+            // set dash array and offset
+            set(path, props);
+
+            return Utility.setStrokeDash(paths, offset);
+        }
     }
 }
 
