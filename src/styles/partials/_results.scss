@@ -1,9 +1,10 @@
 #results-wrapper {
   max-width: 100%;
+  width: 100%;
   margin: 0 auto;
 
   overflow-y: scroll;
-  max-height: 40vh;
+  height: 40vh;
 
   &::-webkit-scrollbar {
     width: 10px;
@@ -11,7 +12,6 @@
 
   &::-webkit-scrollbar-track {
     border-radius: 30px;
-    box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.5);
   }
 
   &::-webkit-scrollbar-thumb {
@@ -39,20 +39,18 @@
   &-cal {
     display: grid;
     grid-template-columns: minmax(100px, 10px) 4fr minmax(100px, 10px);
-    // gap: 5px;
+
     text-align: center;
     word-wrap: break-word;
     word-break: break-all;
     background-color: #cccccc;
-
-    $padding: 8px;
 
     .calculation {
       text-align: left;
     }
 
     p {
-      padding: $padding 5px;
+      padding: 8px 5px;
       font-size: 18px;
       border: 1px solid map-get($colors, secondary);
     }
@@ -68,7 +66,8 @@
 }
 
 .error {
-  font-size: 50px;
-  color: map-get($colors, error);
   font-family: "orange juice";
+  font-size: 50px;
+  text-align: center;
+  color: map-get($colors, error);
 }

@@ -1,16 +1,23 @@
 .container {
   width: 80%;
+  height: 100vh;
   margin: 0 auto;
-  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 h2 {
   font: {
     family: "Ribeye Marrow";
-    size: 30px;
+    size: 35px;
   }
   color: map-get($colors, primary);
   text-align: center;
 
-  margin: 80px 0;
+  .result-split-heading {
+    display: inline-block;
+    opacity: 0;
+  }
 }

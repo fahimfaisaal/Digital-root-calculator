@@ -9,15 +9,19 @@
     font-size: 28px;
     color: map-get($colors, primary);
     font-family: "Righteous";
+
     border-bottom: {
-      color: map-get($colors, secondary);;
-      width: 2.5px;
+      color: map-get($colors, secondary);
+      width: 3px;
       style: solid;
     }
+    border-radius: 5px;
+
+    transform: scaleX(0);
 
     &:focus {
       outline: none;
-      color: map-get($colors, secondary);;
+      color: map-get($colors, secondary);
       border-bottom-color: map-get($colors, primary);
     }
   }
