@@ -65,6 +65,20 @@ class Utility {
             return Utility.setStrokeDash(paths, offset);
         }
     }
+
+    /**
+     * Event Delegation
+     * @param {String} event 
+     * @param {String} selector 
+     * @param {function} callBack 
+     */
+    static addGlobalEventListener(event, selector, callBack) {
+        document.addEventListener(event, e => {
+            if (e.target.matches(selector)) {
+                callBack(e)
+            }
+        })
+    }
 }
 
 export default Utility;
