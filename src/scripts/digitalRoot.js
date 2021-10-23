@@ -1,15 +1,21 @@
+import { gsap } from "gsap";
 import DisplayResults from './displayResult';
 import Utility from './utility';
 
 const { $ } = Utility;
+const { from } = gsap;
+
 class DigitalRoot {
     #staticPattern;
     #dynamicPattern;
     #results;
     #resultNode;
+    #resultFadeOutUp;
+    #recentValue;
 
     constructor(input = null) {
         this.input = input;
+        this.#recentValue = '';
         this.#staticPattern = [
             {
                 regex: /^,/,
@@ -17,7 +23,7 @@ class DigitalRoot {
             },
             {
                 regex: /,{2,}/g,
-                replace: '$1'
+                replace: ','
             },
             {
                 regex: /[^\d,]/g,
@@ -49,6 +55,13 @@ class DigitalRoot {
         this.#results = {};
         this.#resultNode = $('#results-wrapper');
         this.errors = {};
+        this.#resultFadeOutUp = {
+            opacity: 0,
+            y: 30,
+            duration: .6,
+            delay: .5,
+            stagger: 0.1
+        }
     }
 
     /**
@@ -164,7 +177,8 @@ class DigitalRoot {
         const numbers = [];
 
         cal ||= 1;
-        [start, end, cal] = [BigInt(start), BigInt(end), BigInt(cal)]; // converted to BigInt
+
+        const [startBigInt, endBigInt, calBigInt] = [BigInt(start), BigInt(end), BigInt(cal)]; // converted to BigInt
 
         if (end < start || start === end) {
             this.errors.rangeError = 'Please input the ascending range';
@@ -174,16 +188,16 @@ class DigitalRoot {
 
         const actions = {
             '+': () => {
-                for (let number = start; number <= end; number += cal) {
+                for (let number = startBigInt; number <= endBigInt; number += calBigInt) {
                     numbers.push(number);
                 }
             },
             '*': () => {
-                let base = start;
+                let base = startBigInt;
 
-                for (let number = start; number <= end; number++) {
+                for (let number = startBigInt; number <= endBigInt; number++) {
                     numbers.push(base);
-                    base *= cal
+                    base *= calBigInt
                 }
             },
             '/': () => {
@@ -203,7 +217,9 @@ class DigitalRoot {
 
         this.#removeError();
 
-        actions[operator]();
+        const selectedAction = actions[operator];
+
+        selectedAction();
 
         return numbers.join(',');
     }
@@ -236,8 +252,6 @@ class DigitalRoot {
 
             const newResults = splitNumbers.reduce((multiNumberObj, number) => {
                 if (number) {
-                    !isDynamicNumbers && delete multiNumberObj[number.substring(0, number.length - 1)]; // delete the previous input number in live input
-
                     multiNumberObj[number] = this.#getCalculation(number);
                 }
                 return multiNumberObj;
@@ -270,6 +284,13 @@ class DigitalRoot {
                 const value = this.#validateInput(event.target.value);
                 event.target.value = value; // assign the validate value to the input value
 
+                // if previous value and present value are same then return mean not run
+                if (this.#recentValue === value || value[value.length - 1] === ',') {
+                    return
+                }
+
+                this.#recentValue = value;
+
                 // get the digital root of value
                 const parsedObject = this.#parseToObject(value);
 
@@ -283,7 +304,10 @@ class DigitalRoot {
                     this.#resultNode.innerHTML =
                         'rangeError' in this.errors ?
                         `<h4 class="error">${this.errors.rangeError}</h4>`
-                        : markup;
+                            : markup;
+                    
+                    // fadeout up animation
+                    from('.result', this.#resultFadeOutUp);
                 }
                 
                typeof callback === 'function' && callback(parsedObject, markup);
