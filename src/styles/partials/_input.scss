@@ -1,12 +1,17 @@
 .input-wrapper {
   text-align: center;
+  position: relative;
+
+  $max-width: 600px;
+  $width: 100%;
+  $font-size: 28px;
 
   input {
-    max-width: 600px;
-    width: 100%;
+    max-width: $max-width;
+    width: $width;
 
     padding: 5px 10px;
-    font-size: 28px;
+    font-size: $font-size;
     color: map-get($colors, primary);
     font-family: "Righteous";
 
@@ -24,5 +29,25 @@
       color: map-get($colors, secondary);
       border-bottom-color: map-get($colors, primary);
     }
+  }
+
+  #dynamicPlaceholder {
+    max-width: $max-width;
+    width: $width;
+    // border: 1px solid red;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    font-family: "Righteous";
+    font-size: $font-size;
+    text-align: left;
+    color: map-get($colors, placeholder);
+
+    margin-top: -16px;
+    padding-left: 12px;
+
+    pointer-events: none;
   }
 }
