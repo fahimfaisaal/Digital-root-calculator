@@ -21,3 +21,20 @@ h2 {
     opacity: 0;
   }
 }
+
+#githubIcon {
+  position: absolute;
+  right: 0;
+
+  padding: {
+    top: 10px;
+    right: 10px;
+  }
+
+  svg {
+    fill: map-get($colors, body);
+    transition: fill 350ms ease;
+    stroke: map-get($colors, icon-stroke);
+    stroke-width: 2;
+  }
+}

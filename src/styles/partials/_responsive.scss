@@ -1,5 +1,21 @@
 @media (min-width: 1080px) {
+  .heading svg {
+    transform: scale(1.5) translate(-15px, 25vh);
+  }
+
   #results-wrapper {
     max-width: 60%;
+  }
+}
+
+@media (max-width: 1080px) {
+  #githubIcon {
+    bottom: 0;
+
+    padding: {
+      top: 0px;
+      right: 10px;
+      bottom: 10px;
+    }
   }
 }

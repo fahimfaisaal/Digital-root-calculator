@@ -11,10 +11,12 @@ $colors: (
   secondary: hsl(176, 89%, 38%),
   scrollbar: hsla(0, 0%, 77%, 0.4),
   error: hsl(360, 67%, 51%),
+  icon-stroke: hsl(0, 0%, 60%),
 );
 
 body {
   background-color: map-get($colors, body);
+  position: relative;
 }
 
 input {
