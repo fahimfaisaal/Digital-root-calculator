@@ -9,40 +9,47 @@ class Animations {
 
     constructor() {
         this.#introAnimation = {
-            headingDigits: { strokeDashoffset: 0, stagger: .12 },
+            headingDigits: { strokeDashoffset: 0, stagger: .12, delay: 0.5 },
             headingScaleDown: { scale: 1.1, y: '0vh', ease: 'elastic(2.5, 3)' },
+            headingMoveX: { x: 0, ease: 'elastic(2.8, 3)' },
             root: { strokeDashoffset: 0 },
             inputBox: { scaleX: 1, y: -15 },
-            result: { opacity: 1, stagger: .2, duration: 0.8 }
+            result: { opacity: 1, stagger: .2, duration: 0.8 },
+            iconDash: { strokeDashoffset: 0 },
+            iconFill: { fill: '#ffffff', strokeWidth: 0, duration: 1}
         }
         this.#selectedNode = {
             input: $('#inputNumber'),
-            svg: $('svg'),
-            paths: $$('svg > path'),
-            h2: $('h2')
+            svg: $('.svg-wrapper svg'),
+            headingPaths: $$('.svg-wrapper svg > path'),
+            resultLetters: $$('.result-split-heading'),
+            iconPath: $('#githubIcon svg > path')
         }
     }
 
     runIntroAnimation() {
-        const { headingDigits, headingScaleDown, root, inputBox, result } = this.#introAnimation;
+        const { headingDigits, headingScaleDown, headingMoveX, root, inputBox, result, iconDash, iconFill } = this.#introAnimation;
         
-        const { input, svg, paths, h2 } = this.#selectedNode;
+        const { input, svg, headingPaths, resultLetters, iconPath } = this.#selectedNode;
 
-        setStrokeDash(paths);
-        const rootLine = paths.pop();
+        setStrokeDash(headingPaths);
+        setStrokeDash([iconPath]);
+
+        const rootLine = headingPaths.pop();
 
         const defaults = { duration: 1, ease: 'power1.inOut' };
         const tl = gsap.timeline({ defaults: defaults });
-        h2.innerHTML = h2.innerText.replace(/\S/g, '<span class="result-split-heading">$&</span>')
 
         tl
-            .to(paths, headingDigits)
+            .to(headingPaths, headingDigits)
             .to(svg, headingScaleDown)
-            .to(rootLine, root)
+            .to(svg, headingMoveX)
+            .to(rootLine, root, '-=1')
             .to(input, inputBox)
-            .to(".result-split-heading", result, '-=1');
+            .to(resultLetters, result, '-=1')
+            .to(iconPath, iconDash)
+            .to(iconPath, iconFill);
     }
 }
-
 
 export default Animations;
