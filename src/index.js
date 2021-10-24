@@ -1,8 +1,7 @@
 import { gsap } from "gsap";
 import { TextPlugin } from "gsap/TextPlugin";
-import Animations from './scripts/Animations';
 import DigitalRoot from './scripts/digitalRoot';
-import headingSVG from './scripts/headingSVG';
+import svgs from './scripts/svgs';
 import Utility from './scripts/utility';
 import './styles/style.scss';
 
@@ -11,21 +10,21 @@ const { $ } = Utility;
 gsap.registerPlugin(TextPlugin);
 
 const h2 = $('h2');
-h2.innerText = "Results"
+const { headingSVG, githubSVG } = svgs;
+
 // replace the h2 tag letter by letter
-h2.innerHTML = h2.innerText.replace(/\S/g, '<span class="result-split-heading">$&</span>');
+h2.innerText = "Results"
 
 // render svg into svg wrapper
+h2.innerHTML = h2.innerText.replace(/\S/g, '<span class="result-split-heading">$&</span>');
 const headingWrapper = $('.svg-wrapper');
-headingWrapper.innerHTML = headingSVG;
+const githubWrapper = $('#githubIcon');
 
-const animations = new Animations();
-animations.runIntroAnimation()
+headingWrapper.innerHTML = headingSVG;
+githubWrapper.innerHTML = githubSVG;
 
 const inputNode = $('#inputNumber');
 const digitalRoot = new DigitalRoot(inputNode);
 
 // run the event 👍
 digitalRoot.runInputEvent();
-
-// TODO: add helper text animation

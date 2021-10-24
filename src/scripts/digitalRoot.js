@@ -1,17 +1,16 @@
 import { gsap } from "gsap";
+import Animations from './Animations';
 import DisplayResults from './displayResult';
 import Utility from './utility';
 
 const { $ } = Utility;
-const { from } = gsap;
-
 class DigitalRoot {
     #staticPattern;
     #dynamicPattern;
     #results;
     #resultNode;
-    #resultFadeOutUp;
     #recentValue;
+    #animations;
 
     constructor(input = null) {
         this.input = input;
@@ -55,13 +54,7 @@ class DigitalRoot {
         this.#results = {};
         this.#resultNode = $('#results-wrapper');
         this.errors = {};
-        this.#resultFadeOutUp = {
-            opacity: 0,
-            y: 30,
-            duration: .6,
-            delay: .5,
-            stagger: 0.1
-        }
+        this.#animations = new Animations();
     }
 
     /**
@@ -278,6 +271,9 @@ class DigitalRoot {
      * @description send the state results in input event listener
     */
     runInputEvent(callback) {
+        // run the intro animations
+        this.#animations.runIntroAnimation()
+
         if (typeof this.input === 'object') {
             this.input.addEventListener('input', (event) => {
                 // validate the user input only valid number
@@ -287,6 +283,14 @@ class DigitalRoot {
                 // if previous value and present value are same then return mean not run
                 if (this.#recentValue === value || value[value.length - 1] === ',') {
                     return
+                }
+
+                // placeholder animation
+                if (value) {
+                    this.#animations.placeholderTimeline.pause();
+                    $('#dynamicPlaceholder').innerHTML = '';
+                } else {
+                    this.#animations.placeholderTimeline.play();
                 }
 
                 this.#recentValue = value;
@@ -306,11 +310,11 @@ class DigitalRoot {
                         `<h4 class="error">${this.errors.rangeError}</h4>`
                             : markup;
                     
-                    // fadeout up animation
-                    from('.result', this.#resultFadeOutUp);
+                    // result fadeout up animation
+                    this.#animations.fadeOutUp('.result');
                 }
                 
-               typeof callback === 'function' && callback(parsedObject, markup);
+                typeof callback === 'function' && callback(value, parsedObject);
             })
 
             return
