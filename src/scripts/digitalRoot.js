@@ -1,9 +1,9 @@
-import { gsap } from "gsap";
 import Animations from './Animations';
 import DisplayResults from './displayResult';
 import Utility from './utility';
 
 const { $ } = Utility;
+
 class DigitalRoot {
     #staticPattern;
     #dynamicPattern;
@@ -11,9 +11,12 @@ class DigitalRoot {
     #resultNode;
     #recentValue;
     #animations;
-
+    
     constructor(input = null) {
         this.input = input;
+        this.errors = {};
+
+        // private props
         this.#recentValue = '';
         this.#staticPattern = [
             {
@@ -53,7 +56,6 @@ class DigitalRoot {
         ];
         this.#results = {};
         this.#resultNode = $('#results-wrapper');
-        this.errors = {};
         this.#animations = new Animations();
     }
 
@@ -136,7 +138,7 @@ class DigitalRoot {
      * @returns {object result<string>, calculation<array[][]>}
      * @description split the calculation into 2D array and return an object with two props
     */
-    #getCalculation(number) {
+    #getCalculationObj(number) {
         const digitalRootObj = this.#getDigitalRoot(number);
         const getCalculationAsArr = digitalRootObj.calculation.split(';');
         const calculationSplitToArr = getCalculationAsArr.reduce((arr, cal) => {
@@ -166,7 +168,7 @@ class DigitalRoot {
      * @returns {string} 
      * @description if user input is dynamic pattern then it's this method generate string of numbers via user input range
      */
-    #calculateRange(start, end, cal, operator = '+') {
+    #calculateDynamicRange(start, end, cal, operator = '+') {
         const numbers = [];
 
         cal ||= 1;
@@ -231,7 +233,7 @@ class DigitalRoot {
             const [, operator] = number.split(/\d+/).filter(item => item !== '');
             
             if (start && end) {
-                number = this.#calculateRange(+start, +end, +cal, operator);
+                number = this.#calculateDynamicRange(+start, +end, +cal, operator);
                 isDynamicNumbers = true;
             } else {
                 return this.#results;
@@ -245,7 +247,7 @@ class DigitalRoot {
 
             const newResults = splitNumbers.reduce((multiNumberObj, number) => {
                 if (number) {
-                    multiNumberObj[number] = this.#getCalculation(number);
+                    multiNumberObj[number] = this.#getCalculationObj(number);
                 }
                 return multiNumberObj;
             }, {})
@@ -260,7 +262,7 @@ class DigitalRoot {
         number = number.replace(/,/, '');
         this.#results = {} // delete the previous input number
 
-        this.#results[number] = this.#getCalculation(number);
+        this.#results[number] = this.#getCalculationObj(number);
 
         return this.#results;
     }
@@ -288,7 +290,6 @@ class DigitalRoot {
                 // placeholder animation
                 if (value) {
                     this.#animations.placeholderTimeline.pause();
-                    $('#dynamicPlaceholder').innerHTML = '';
                 } else {
                     this.#animations.placeholderTimeline.play();
                 }

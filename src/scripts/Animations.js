@@ -14,12 +14,17 @@ class Animations {
             svg: $('.svg-wrapper svg'),
             headingPaths: $$('.svg-wrapper svg > path'),
             resultLetters: $$('.result-split-heading'),
-            iconPath: $('#githubIcon svg > path')
+            iconPath: $('#githubIcon svg > path'),
+            placeholder: $('#inputNumber')
         }
         this.introTimeline = gsap.timeline({ defaults: { duration: 1, ease: 'power1.inOut' } });
-        this.placeholderTimeline = gsap.timeline({ defaults: { duration: 1.5, delay: 3, ease: "power2" } });
+        this.placeholderTimeline = gsap.timeline({ defaults: { duration: .5, delay: 3.5, ease: `power1.inOut` } });
     }
 
+    /**
+     * @description this method create the intro animation of the existing application
+     * @returns {this}
+     */
     runIntroAnimation() {
         const { input, svg, headingPaths, resultLetters, iconPath } = this.#selectedNode;
 
@@ -42,22 +47,33 @@ class Animations {
         return this;
     }
 
+    /**
+     * @description this method create placeholder text animation which can help user to give a clue what user can do
+     * @returns {this}
+     */
     placeholderAnimation = () => {
-        const placeholder = $('#dynamicPlaceholder');
-
-        window.innerWidth > 770 && this.placeholderTimeline
-            .to(placeholder, { text: "1234", delay: 0.5 })
-            .to(placeholder, { text: "1234,5678,9012 input multiple via comma (,)", duration: 3 })
-            .to(placeholder, { text: "1-10 define range via dash (-)" })
-            .to(placeholder, { text: "1-10+2 get sequance via (+) plus" })
-            .to(placeholder, { text: "1-10/2 get sequance via (/) divide" })
-            .to(placeholder, { text: "1-10*2 get sequance via (*) multiply" })
-            .to(placeholder, { text: "1-10^2 get sequance via (^) power" })
-            .to(placeholder, { text: "", duration: 0.5, onComplete: () => this.placeholderTimeline.restart() })
+        const { placeholder } = this.#selectedNode;
+        const isDesktop = () => window.innerWidth > 768 ? true : ''
+        
+        this.placeholderTimeline
+            .to(placeholder, { attr: { placeholder: `1234` } }, `-=3.5`)
+            .to(placeholder, { attr: { placeholder: `1234,5678,9012${isDesktop() && ' input multiple via comma (,)'}`} })
+            .to(placeholder, { attr: { placeholder: `1-100 define range${isDesktop() && ' via dash (-)'}` } })
+            .to(placeholder, { attr: { placeholder: `1-100+2 get sequance${isDesktop() && ' via (+) plus'}` } })
+            .to(placeholder, { attr: { placeholder: `1-100/2 get sequance${isDesktop() && ' via (/) divide'}` } })
+            .to(placeholder, { attr: { placeholder: `1-100*2 get sequance${isDesktop() && ' via (*) multiply'}` } })
+            .to(placeholder, { attr: { placeholder: `1-100^2 get sequance${isDesktop() && ' via (^) power'}` } })
+            .to(placeholder, { attr: { placeholder: `type, what you want` } })
+            .to(placeholder, { attr: { placeholder: `` }, duration: 0.5, onComplete: () => this.placeholderTimeline.restart() })
 
         return this;
     }
 
+    /**
+     * @description it's just create a gsap tween
+     * @param {DOM Node<Object>} target
+     * @returns {gsap timline<Object>}
+     */
     fadeOutUp(target) {
         const animationObj = {
             opacity: 0,

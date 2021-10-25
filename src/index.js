@@ -1,13 +1,9 @@
-import { gsap } from "gsap";
-import { TextPlugin } from "gsap/TextPlugin";
 import DigitalRoot from './scripts/digitalRoot';
 import svgs from './scripts/svgs';
 import Utility from './scripts/utility';
 import './styles/style.scss';
 
 const { $ } = Utility;
-
-gsap.registerPlugin(TextPlugin);
 
 const h2 = $('h2');
 const { headingSVG, githubSVG } = svgs;
