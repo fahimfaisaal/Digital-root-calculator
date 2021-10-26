@@ -91,6 +91,11 @@ class Animations {
         return fadeOut;
     }
 
+    /**
+     * @description it's return a fadeOut effect tween
+     * @param {DOM Node<Object>} target
+     * @return {Object} gsap tween
+     */
     fadeInOutTween(target) {
         return gsap.to(target, { paused: true, opacity: 0, duration: 0.1, ease: 'power1' })
     }

@@ -11,22 +11,22 @@ class DisplayResults {
      * @description catch the result objects calculation and parse it to dom calculation template
      */
     #getCalculationTemplate(array) {
-        let template = '';
-
-        array.forEach(([calculation, result], index) => {
+        const template = array.reduce((template, [calculation, result], index) => {
             template += `
             <p class="calculation">${calculation}</p>
             <p>${result}</p>
             ${index === array.length - 1 ? '' : `<p>${result}</p>`}
-            `
-        })
+            `;
+
+            return template;
+        }, '');
 
         return template;
     }
 
     /**
      * @returns {string} the string representation of parseObjects DOM Nodes
-     */
+    */
     generateMarkup() {
         let resultsMarkup = '';
         
