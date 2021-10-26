@@ -1,6 +1,3 @@
-import { gsap } from "gsap";
-
-const { set } = gsap;
 class Utility {
     /**
      * @param {string} cssSelector 
@@ -60,7 +57,8 @@ class Utility {
             }
 
             // set dash array and offset
-            set(path, props);
+            path.style.strokeDasharray = props.strokeDasharray;
+            path.style.strokeDashoffset = props.strokeDashoffset;
 
             return Utility.setStrokeDash(paths, offset);
         }
