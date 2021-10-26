@@ -14,11 +14,10 @@ class Animations {
             svg: $('.svg-wrapper svg'),
             headingPaths: $$('.svg-wrapper svg > path'),
             resultLetters: $$('.result-split-heading'),
-            iconPath: $('#githubIcon svg > path'),
-            placeholder: $('#inputNumber')
+            iconPath: $('#githubIcon svg > path')
         }
         this.introTimeline = gsap.timeline({ defaults: { duration: 1, ease: 'power1.inOut' } });
-        this.placeholderTimeline = gsap.timeline({ defaults: { duration: .5, delay: 3.5, ease: `power1.inOut` } });
+        this.placeholderTimeline = gsap.timeline({ defaults: { duration: 0.5, delay: 3.5, ease: `power1.inOut` } });
     }
 
     /**
@@ -40,7 +39,7 @@ class Animations {
             .to(svg, { x: 0, ease: 'elastic(2.8, 3)' }) // headingMoveX
             .to(rootLine, { strokeDashoffset: 0 }, '-=1') //root
             .to(input, { scaleX: 1, y: -15, onComplete: this.placeholderAnimation }) // scale up the inputBox
-            .to(resultLetters, { opacity: 1, stagger: .2, duration: 0.8 }, '-=1') // result heading
+            .to(resultLetters, { opacity: 1, stagger: .2, duration: 0.8 }, '-=1') // result heading fade in
             .to(iconPath, { strokeDashoffset: 0 }) // github iconDash
             .to(iconPath, { fill: '#ffffff', strokeWidth: 0, duration: 1 }); // github iconFill
         
@@ -52,19 +51,23 @@ class Animations {
      * @returns {this}
      */
     placeholderAnimation = () => {
-        const { placeholder } = this.#selectedNode;
+        const { input } = this.#selectedNode;
+        
+        // if the app open in desktop it's return true and add some words by condition
         const isDesktop = () => window.innerWidth > 768 ? true : ''
         
         this.placeholderTimeline
-            .to(placeholder, { attr: { placeholder: `1234` } }, `-=3.5`)
-            .to(placeholder, { attr: { placeholder: `1234,5678,9012${isDesktop() && ' input multiple via comma (,)'}`} })
-            .to(placeholder, { attr: { placeholder: `1-100 define range${isDesktop() && ' via dash (-)'}` } })
-            .to(placeholder, { attr: { placeholder: `1-100+2 get sequance${isDesktop() && ' via (+) plus'}` } })
-            .to(placeholder, { attr: { placeholder: `1-100/2 get sequance${isDesktop() && ' via (/) divide'}` } })
-            .to(placeholder, { attr: { placeholder: `1-100*2 get sequance${isDesktop() && ' via (*) multiply'}` } })
-            .to(placeholder, { attr: { placeholder: `1-100^2 get sequance${isDesktop() && ' via (^) power'}` } })
-            .to(placeholder, { attr: { placeholder: `type, what you want` } })
-            .to(placeholder, { attr: { placeholder: `` }, duration: 0.5, onComplete: () => this.placeholderTimeline.restart() })
+            .to(input, { attr: { placeholder: `1234` } }, `-=3.5`)
+            .to(input, { attr: { placeholder: `12.345` } })
+            .to(input, { attr: { placeholder: `1234,5678,9012${isDesktop() && ' input multiple via comma (,)'}`} })
+            .to(input, { attr: { placeholder: `1.234,5.678,9.012${isDesktop() && ' input multiple via comma (,)'}`} })
+            .to(input, { attr: { placeholder: `1-100 define range${isDesktop() && ' via dash (-)'}` } })
+            .to(input, { attr: { placeholder: `1-10+2 get sequance${isDesktop() && ' via (+) plus'}` } })
+            .to(input, { attr: { placeholder: `1-10/2 get sequance${isDesktop() && ' via (/) divide'}` } })
+            .to(input, { attr: { placeholder: `1-10*2 get sequance${isDesktop() && ' via (*) multiply'}` } })
+            .to(input, { attr: { placeholder: `1-10^2 get sequance${isDesktop() && ' via (^) power'}` } })
+            .to(input, { attr: { placeholder: `type, what you want` } })
+            .to(input, { attr: { placeholder: `` }, duration: 0.5, onComplete: () => this.placeholderTimeline.restart() })
 
         return this;
     }
@@ -86,6 +89,10 @@ class Animations {
         const fadeOut = gsap.from(target, animationObj);
 
         return fadeOut;
+    }
+
+    fadeInOutTween(target) {
+        return gsap.to(target, { paused: true, opacity: 0, duration: 0.1, ease: 'power1' })
     }
 }
 
