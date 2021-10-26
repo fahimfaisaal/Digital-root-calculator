@@ -1,4 +1,3 @@
-
 class DisplayResults {
     #resultObject;
 
@@ -37,9 +36,9 @@ class DisplayResults {
                     <h3 class="result-heading">${number}</h3>
                     <div class="result-cal">
                         <p>${number}</p>
-                        ${this.#getCalculationTemplate(this.#resultObject[number].calculation)}
+                        ${this.#getCalculationTemplate(this.#resultObject[number].calculationArr)}
                     </div>
-                    <h3 class="result-footer">${this.#resultObject[number].result}</h3>
+                    <h3 class="result-footer">${this.#resultObject[number].resultString}</h3>
                 </div>
             `;
 

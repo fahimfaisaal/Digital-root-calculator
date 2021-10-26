@@ -28,7 +28,15 @@ class DigitalRoot {
                 replace: ','
             },
             {
-                regex: /[^\d,]/g,
+                regex: /\.{2,}/g,
+                replace: '.'
+            },
+            {
+                regex: /(\.\d+)\./g,
+                replace: '$1'
+            },
+            {
+                regex: /[^\d,\.]/g,
                 replace: ''
             }
         ];
@@ -55,7 +63,7 @@ class DigitalRoot {
             }
         ];
         this.#results = {};
-        this.#resultNode = $('#results-wrapper');
+        this.#resultNode = $('#resultsWrapper');
         this.#animations = new Animations();
     }
 
@@ -75,82 +83,41 @@ class DigitalRoot {
             .reduce((value, pattern) => value.replace(pattern.regex, pattern.replace), value);
     };
 
+
     /**
-     * @param {string} num 
-     * @returns {Object}
-     * @description any number converted to digital root; as like -> 56; 5 + 6 = 11; 1 + 1 = 2;
+     * @param {number} number
+     * @returns {object result<string>, calculation<array[][]>} digital root of 56 -> [['5 + 6', '11'], ['1 + 1', '2']]
+     * @description split the calculation into 2D array and return an object with two props
     */
-    #getDigitalRoot(num) {
+    #getDigitalRootObj(num, rootObjStruct = { resultString: '', calculationArr: [] }) {
         if (num === undefined) {
             return {};
         }
 
         num = num.replace(/\./g, ''); // replace all dots for floating number
         const splitNum = [...("" + BigInt(num))]; // split number to arr of string
-        const rootObjStruct = { result: 0n, calculation: '' };
 
         // create root object with two properties like { result: number(the digital root of num), calculation: string(representing the calculation process)}
         const rootObj = splitNum.reduce((acc, cur, index) => {
             acc.result += BigInt(cur);
-            acc.calculation += `${cur}${index === splitNum.length - 1 ? '' : '+'}`; // calculation String
+            acc.calculationString += `${cur}${index === splitNum.length - 1 ? '' : '+'}`; // calculation String
 
             return acc;
-        }, rootObjStruct);
+        }, { result: 0n, calculationString: '' });
 
-        rootObj.result = rootObj.result.toString();
-        rootObj.calculation += `=${rootObj.result};`;
+        const { result, calculationString } = rootObj;
+
+        rootObjStruct.resultString = result.toString();
+        rootObjStruct.calculationArr.push([calculationString, rootObjStruct.resultString]);
 
         if (rootObj.result > 9) {
             // if result is greater then 9 then again split the number
-            const splitResult = this.#getDigitalRoot(rootObj.result);
-            rootObj.result = splitResult.result;
-            rootObj.calculation += splitResult.calculation; // join the new calculation string with previous calculation
+            const { resultString } = rootObjStruct;
 
-            return rootObj;
+            return this.#getDigitalRootObj(resultString, rootObjStruct);
         }
 
-        return rootObj;
-    }
-
-    /**
-     * @param {string} number 
-     * @returns {boolean}
-     * @description if number has multiple number it's return true otherwise false
-     */
-    #isMultipleNumber(number) {
-        const isComma = number.includes(',')
-
-        if (!isComma) {
-            return false;
-        }
-
-        const lengthOfNumbers = number.split(',').filter(item => item !== '').length;
-
-        if (lengthOfNumbers < 2) {
-            return false;
-        }
-
-        return true;
-    };
-
-    /**
-     * @param {number} number 
-     * @returns {object result<string>, calculation<array[][]>}
-     * @description split the calculation into 2D array and return an object with two props
-    */
-    #getCalculationObj(number) {
-        const digitalRootObj = this.#getDigitalRoot(number);
-        const getCalculationAsArr = digitalRootObj.calculation.split(';');
-        const calculationSplitToArr = getCalculationAsArr.reduce((arr, cal) => {
-            cal && arr.push(cal.split('='));
-
-            return arr;
-        }, []);
-
-        return {
-            result: digitalRootObj.result,
-            calculation: calculationSplitToArr
-        };
+        return rootObjStruct;
     }
 
     /**
@@ -169,29 +136,29 @@ class DigitalRoot {
      * @description if user input is dynamic pattern then it's this method generate string of numbers via user input range
      */
     #calculateDynamicRange(start, end, cal, operator = '+') {
+        if (end < start || start === end) {
+            this.errors.rangeError = 'Please input the ascending range';
+
+            return [start + '', end + ''];
+        }
+        
         const numbers = [];
 
         cal ||= 1;
 
         const [startBigInt, endBigInt, calBigInt] = [BigInt(start), BigInt(end), BigInt(cal)]; // converted to BigInt
 
-        if (end < start || start === end) {
-            this.errors.rangeError = 'Please input the ascending range';
-
-            return `${start},${end}`;
-        }
-
         const actions = {
             '+': () => {
                 for (let number = startBigInt; number <= endBigInt; number += calBigInt) {
-                    numbers.push(number);
+                    numbers.push(number + '');
                 }
             },
             '*': () => {
                 let base = startBigInt;
 
                 for (let number = startBigInt; number <= endBigInt; number++) {
-                    numbers.push(base);
+                    numbers.push(base + '');
                     base *= calBigInt
                 }
             },
@@ -200,12 +167,12 @@ class DigitalRoot {
 
                 for (let number = start; number <= end; number++) {
                     base /= cal;
-                    numbers.push(base);
+                    numbers.push(base + '');
                 }
             },
             '^': () => {
                 for (let number = start; number <= end; number++) {
-                    numbers.push(Math.pow(number, cal));
+                    numbers.push(Math.pow(number, cal) + '');
                 }
             }
         }
@@ -216,39 +183,42 @@ class DigitalRoot {
 
         selectedAction();
 
-        return numbers.join(',');
+        return numbers;
     }
 
     /**
-     * @param {string} number 
+     * @param {string} value 
+     * @returns {array}
+     * @description it returns the array version of the user input
+     */
+    #runDynamicRange(value) {
+        const [start, end, cal] = value.split(/[*+/^-]/g);
+        const [, operator] = value.split(/\d+/).filter(item => item !== '');
+
+        if (start && end) {
+            value = this.#calculateDynamicRange(+start, +end, +cal, operator);
+            return value;
+        }
+
+        return [];
+    }
+
+    /**
+     * @param {array} numbers 
      * @returns {object} state results
      * @description it's modify the result object by user input
      */
-    #parseToObject(number) {
-        let isDynamicNumbers = false;
+    #parseToObject(numbers) {
+        const length = numbers.length;
 
-        // if number is dynamic range
-        if (/^\d+-/.test(number)) {
-            const [start, end, cal] = number.split(/[*+/^-]/g);
-            const [, operator] = number.split(/\d+/).filter(item => item !== '');
-            
-            if (start && end) {
-                number = this.#calculateDynamicRange(+start, +end, +cal, operator);
-                isDynamicNumbers = true;
-            } else {
-                return this.#results;
-            }
+        if (!length) {
+            return this.#results;
         }
 
-
         // if input multiple numbers
-        if (this.#isMultipleNumber(number)) {
-            const splitNumbers = number.split(',');
-
-            const newResults = splitNumbers.reduce((multiNumberObj, number) => {
-                if (number) {
-                    multiNumberObj[number] = this.#getCalculationObj(number);
-                }
+        if (length > 1) {
+            const newResults = numbers.reduce((multiNumberObj, number) => {
+                multiNumberObj[number] = this.#getDigitalRootObj(number);
                 return multiNumberObj;
             }, {})
 
@@ -259,10 +229,10 @@ class DigitalRoot {
 
         this.#removeError();
 
-        number = number.replace(/,/, '');
-        this.#results = {} // delete the previous input number
+        this.#results = {} // delete the previous input numbers
 
-        this.#results[number] = this.#getCalculationObj(number);
+        const [number] = numbers;
+        this.#results[number] = this.#getDigitalRootObj(number);
 
         return this.#results;
     }
@@ -273,6 +243,10 @@ class DigitalRoot {
      * @description send the state results in input event listener
     */
     runInputEvent(callback) {
+         const resultfadeInTween = this.#animations.fadeInOutTween(this.#resultNode)
+        // fade in the bar (firefox)
+        resultfadeInTween.play();
+
         // run the intro animations
         this.#animations.runIntroAnimation()
 
@@ -290,14 +264,24 @@ class DigitalRoot {
                 // placeholder animation
                 if (value) {
                     this.#animations.placeholderTimeline.pause();
+                    resultfadeInTween.reverse();
                 } else {
                     this.#animations.placeholderTimeline.play();
+                    resultfadeInTween.restart();
                 }
 
                 this.#recentValue = value;
 
-                // get the digital root of value
-                const parsedObject = this.#parseToObject(value);
+                let values; // it will be array
+
+                if (/^\d+-/.test(value)) {
+                    values = this.#runDynamicRange(value);
+                } else {
+                    values = value.split(',');
+                }
+
+                // nget the digital root of value
+                const parsedObject = this.#parseToObject(values);
 
                 // create the instance of DisplayResults class
                 const display = new DisplayResults(parsedObject);
@@ -306,13 +290,12 @@ class DigitalRoot {
                 if ("" in parsedObject) {
                     this.#resultNode.innerHTML = '';
                 } else {
-                    this.#resultNode.innerHTML =
-                        'rangeError' in this.errors ?
-                        `<h4 class="error">${this.errors.rangeError}</h4>`
-                            : markup;
+                    const isError = 'rangeError' in this.errors;
+
+                    this.#resultNode.innerHTML = isError ? `<h4 class="error">${this.errors?.rangeError}</h4>` : markup;
                     
                     // result fadeout up animation
-                    this.#animations.fadeOutUp('.result');
+                    !isError && this.#animations.fadeOutUp('.result');
                 }
                 
                 typeof callback === 'function' && callback(value, parsedObject);
