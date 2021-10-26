@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="../asset/favicon.ico" type="image/x-icon" />
     <title>Digital root calculator</title>
   </head>
   <body>
@@ -12,16 +13,22 @@
       id="githubIcon"
       target="_blank"
     >
+      <!-- svg will be set by javascript -->
     </a>
     <div class="container">
       <div class="heading">
-        <div class="svg-wrapper"></div>
+        <div class="svg-wrapper">
+          <!-- svg will be set by javascript -->
+        </div>
       </div>
       <div class="input-wrapper">
         <input placeholder="" id="inputNumber" type="text" />
+        <!-- placeholder will be set dynamically via gsap -->
       </div>
       <h2></h2>
-      <div id="results-wrapper"></div>
+      <div id="resultsWrapper">
+        <!-- result will be set dynamically via javascript -->
+      </div>
     </div>
   </body>
 </html>
