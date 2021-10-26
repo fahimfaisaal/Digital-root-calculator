@@ -3,7 +3,7 @@
     transform: scale(1.5) translate(-15px, 25vh);
   }
 
-  #results-wrapper {
+  #resultsWrapper {
     max-width: 60%;
   }
 }
@@ -11,11 +11,10 @@
 @media (max-width: 1080px) {
   #githubIcon {
     bottom: 0;
+    width: 35px;
 
     padding: {
-      top: 0px;
-      right: 15px;
-      bottom: 15px;
+      right: 5px;
     }
   }
 }
