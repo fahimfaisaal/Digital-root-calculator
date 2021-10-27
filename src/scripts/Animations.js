@@ -100,7 +100,7 @@ class Animations {
      * @return {Object} gsap tween
      */
     fadeInOutTween(target) {
-        return gsap.to(target, { paused: true, opacity: 0, duration: 0.1, ease: 'power1' })
+        return gsap.to(target, { paused: true, opacity: 1, duration: 0.1, ease: 'power1' })
     }
 }
 
