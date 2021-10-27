@@ -31,6 +31,9 @@ class Animations {
         setStrokeDash(headingPaths);
         setStrokeDash([iconPath]);
 
+        const svgs = $$('svg');
+        gsap.to(svgs, { opacity: 1 });
+
         const rootLine = headingPaths.pop();
 
         this.introTimeline
