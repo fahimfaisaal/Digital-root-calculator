@@ -2,14 +2,12 @@ const path = require('path');
 
 let mode = 'development';
 let target = 'web';
-let outputFileJs = '[name].bundle.js';
-let outputFileCss = '[name].css';
+const outputFileJs = '[name].bundle.js';
+const outputFileCss = '[name].css';
 
 if (process.env.NODE_ENV === 'production') {
     mode = 'production';
     target = 'browserslist';
-    outputFileJs = '[name].[contenthash].bundle.js';
-    outputFileCss = '[name].[contenthash].css';
 }
 
 // plugins
