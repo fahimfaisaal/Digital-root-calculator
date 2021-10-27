@@ -243,10 +243,6 @@ class DigitalRoot {
      * @description send the state results in input event listener
     */
     runInputEvent(callback) {
-         const resultfadeInTween = this.#animations.fadeInOutTween(this.#resultNode)
-        // fade in the bar (firefox)
-        resultfadeInTween.play();
-
         // run the intro animations
         this.#animations.runIntroAnimation()
 
@@ -261,13 +257,15 @@ class DigitalRoot {
                     return
                 }
 
+                // the result animation
+                const resultfadeInTween = this.#animations.fadeInOutTween(this.#resultNode);
                 // placeholder animation
                 if (value) {
                     this.#animations.placeholderTimeline.pause();
-                    resultfadeInTween.reverse();
+                    resultfadeInTween.play();
                 } else {
                     this.#animations.placeholderTimeline.play();
-                    resultfadeInTween.restart();
+                    resultfadeInTween.reverse();
                 }
 
                 this.#recentValue = value;
