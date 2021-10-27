@@ -1,10 +1,16 @@
+@media (min-width: 768px) {
+  #resultsWrapper {
+    max-width: 80%;
+  }
+}
+
 @media (min-width: 1080px) {
   .heading svg {
     transform: scale(1.5) translate(-15px, 25vh);
   }
 
   #resultsWrapper {
-    max-width: 60%;
+    max-width: 50%;
   }
 }
 
