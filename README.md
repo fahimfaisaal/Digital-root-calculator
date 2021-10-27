@@ -11,11 +11,9 @@
 
 UML Diagram is [here](https://app.diagrams.net/?src=about#Hfahimfaisaal%2FdigitalRootCalculator%2Fmaster%2FUML.drawio)
 <br />
-[Live view](https://digitalroot.netlify.app/)
+[Live view](https://digitalrootcalculator.netlify.app//)
 
 ## How to run on localhost
-
----
 
 First install dependencies:
 
