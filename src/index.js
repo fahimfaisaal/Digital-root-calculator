@@ -11,7 +11,8 @@ h2.innerText = "Results"
 h2.innerHTML = h2.innerText.replace(/\S/g, '<span class="result-split-heading">$&</span>');
 
 const inputNode = $('#inputNumber');
-const digitalRoot = new DigitalRoot(inputNode);
+const resultNode = $('#resultsWrapper');
+const digitalRoot = new DigitalRoot(inputNode, resultNode);
 
 // run the event 👍
 digitalRoot.runInputEvent();

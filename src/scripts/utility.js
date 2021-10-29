@@ -77,6 +77,10 @@ class Utility {
             }
         })
     }
+
+    static isHtmlElement(...params) {
+        return params.every(item => item instanceof HTMLElement);
+    }
 }
 
 export default Utility;

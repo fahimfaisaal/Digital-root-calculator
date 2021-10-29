@@ -2,22 +2,22 @@ import Animations from './Animations';
 import DisplayResults from './displayResult';
 import Utility from './utility';
 
-const { $ } = Utility;
+const { isHtmlElement } = Utility;
 
 class DigitalRoot {
     #staticPattern;
     #dynamicPattern;
     #results;
-    #resultNode;
-    #recentValue;
+    #previousValue;
     #animations;
     
-    constructor(input = null) {
+    constructor(input = null, resultNode = null) {
         this.input = input;
+        this.resultNode = resultNode;
         this.errors = {};
 
         // private props
-        this.#recentValue = '';
+        this.#previousValue = '';
         this.#staticPattern = [
             {
                 regex: /^,/,
@@ -63,7 +63,6 @@ class DigitalRoot {
             }
         ];
         this.#results = {};
-        this.#resultNode = $('#resultsWrapper');
         this.#animations = new Animations();
     }
 
@@ -224,6 +223,7 @@ class DigitalRoot {
 
             this.#results = newResults;
 
+
             return this.#results;
         }
 
@@ -238,71 +238,85 @@ class DigitalRoot {
     }
 
     /**
-     * Async method
-     * @callback callback
-     * @description send the state results in input event listener
-    */
-    runInputEvent(callback) {
-        // run the intro animations
-        this.#animations.runIntroAnimation()
+     * @param {string} value 
+     * @returns {array}
+     * @description split the value by condition is the value are dynamic or static
+     */
+    #valueOrganizer(value) {
+        if (/^\d+-/.test(value)) {
+            return this.#runDynamicRange(value);
+        }
+        
+        return value.split(',');
+    }
 
-        if (typeof this.input === 'object') {
-            this.input.addEventListener('input', (event) => {
-                // validate the user input only valid number
-                const value = this.#validateInput(event.target.value);
-                event.target.value = value; // assign the validate value to the input value
+    /**
+     * @param {Object} event 
+     * @returns undefined
+     * @description handle the event listener
+     */
+    #inputEventHandler = (event) => {
+        // validate the user input only valid number
+        const value = this.#validateInput(event.target.value);
+        event.target.value = value; // assign the validate value to the input value
 
-                // if previous value and present value are same then return mean not run
-                if (this.#recentValue === value || value[value.length - 1] === ',') {
-                    return
-                }
-
-                // the result animation
-                const resultfadeInTween = this.#animations.fadeInOutTween(this.#resultNode);
-                // placeholder animation
-                if (value) {
-                    this.#animations.placeholderTimeline.pause();
-                    resultfadeInTween.play();
-                } else {
-                    this.#animations.placeholderTimeline.play();
-                    resultfadeInTween.reverse();
-                }
-
-                this.#recentValue = value;
-
-                let values; // it will be array
-
-                if (/^\d+-/.test(value)) {
-                    values = this.#runDynamicRange(value);
-                } else {
-                    values = value.split(',');
-                }
-
-                // nget the digital root of value
-                const parsedObject = this.#parseToObject(values);
-
-                // create the instance of DisplayResults class
-                const display = new DisplayResults(parsedObject);
-                const markup = display.generateMarkup(); // generate the markup via parsed object
-
-                if ("" in parsedObject) {
-                    this.#resultNode.innerHTML = '';
-                } else {
-                    const isError = 'rangeError' in this.errors;
-
-                    this.#resultNode.innerHTML = isError ? `<h4 class="error">${this.errors?.rangeError}</h4>` : markup;
-                    
-                    // result fadeout up animation
-                    !isError && this.#animations.fadeOutUp('.result');
-                }
-                
-                typeof callback === 'function' && callback(value, parsedObject);
-            })
-
+        // if previous value and present value are same then return mean not run
+        if (this.#previousValue === value || /[,\-]/.test(value[value.length - 1])) {
             return
         }
 
-        callback(null);
+        // the result animation
+        const resultFadeInTween = this.#animations.fadeInOutTween(this.resultNode);
+        // placeholder animation
+        if (value) {
+            this.#animations.placeholderTimeline.pause();
+            resultFadeInTween.play();
+        } else {
+            this.#animations.placeholderTimeline.play();
+            resultFadeInTween.reverse();
+        }
+
+        // assigned the new value to the recent value
+        this.#previousValue = value;
+
+        const values = this.#valueOrganizer(value); // it will be array
+
+        // get the digital root of value
+        const parsedObject = this.#parseToObject(values);
+
+        // create the instance of DisplayResults class
+        const display = new DisplayResults(parsedObject);
+        const markup = display.generateMarkup(); // generate the markup via parsed object
+
+        if ("" in parsedObject) {
+            this.resultNode.innerHTML = '';
+        } else {
+            const isError = 'rangeError' in this.errors;
+            const rangeErrorMarkup = `<h4 class="error">${this.errors?.rangeError}</h4>`;
+
+            this.resultNode.innerHTML = isError ? rangeErrorMarkup : markup;
+                    
+            // result fadeout up animation
+            !isError && this.#animations.fadeOutUp('.result');
+        }
+    }
+
+    /**
+     * @param {string} eventType
+     * @return {boolean} 
+     * @description send the state results in input event listener
+    */
+    runInputEvent() {
+        // run the intro animations
+        this.#animations.runIntroAnimation()
+
+        if (isHtmlElement(this.input, this.resultNode)) {
+            this.input.addEventListener('input', this.#inputEventHandler);
+
+            return true
+        }
+
+        return false;
     }
 
     /**

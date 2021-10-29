@@ -31,6 +31,7 @@ class Animations {
         setStrokeDash(headingPaths);
         setStrokeDash([iconPath]);
 
+        // opacity 0 to 1
         const svgs = $$('svg');
         gsap.to(svgs, { opacity: 1 });
 
@@ -65,10 +66,10 @@ class Animations {
             .to(input, { attr: { placeholder: `1234,5678,9012${isDesktop() && ' input multiple via comma (,)'}`} })
             .to(input, { attr: { placeholder: `1.234,5.678,9.012${isDesktop() && ' input multiple via comma (,)'}`} })
             .to(input, { attr: { placeholder: `1-100 define range${isDesktop() && ' via dash (-)'}` } })
-            .to(input, { attr: { placeholder: `1-10+2 get sequance${isDesktop() && ' via (+) plus'}` } })
-            .to(input, { attr: { placeholder: `1-10/2 get sequance${isDesktop() && ' via (/) divide'}` } })
-            .to(input, { attr: { placeholder: `1-10*2 get sequance${isDesktop() && ' via (*) multiply'}` } })
-            .to(input, { attr: { placeholder: `1-10^2 get sequance${isDesktop() && ' via (^) power'}` } })
+            .to(input, { attr: { placeholder: `1-10+2 get sequence${isDesktop() && ' via (+) plus'}` } })
+            .to(input, { attr: { placeholder: `1-10/2 get sequence${isDesktop() && ' via (/) divide'}` } })
+            .to(input, { attr: { placeholder: `1-10*2 get sequence${isDesktop() && ' via (*) multiply'}` } })
+            .to(input, { attr: { placeholder: `1-10^2 get sequence${isDesktop() && ' via (^) power'}` } })
             .to(input, { attr: { placeholder: `type, what you want` } })
             .to(input, { attr: { placeholder: `` }, duration: 0.5, onComplete: () => this.placeholderTimeline.restart() })
 
@@ -78,7 +79,7 @@ class Animations {
     /**
      * @description it's just create a gsap tween
      * @param {DOM Node<Object>} target
-     * @returns {gsap timline<Object>}
+     * @returns {gsap timeline<Object>}
      */
     fadeOutUp(target) {
         const animationObj = {
@@ -95,7 +96,7 @@ class Animations {
     }
 
     /**
-     * @description it's return a fadeOut effect tween
+     * @description it's return a fade in Out effect tween
      * @param {DOM Node<Object>} target
      * @return {Object} gsap tween
      */
