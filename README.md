@@ -1,4 +1,4 @@
-<h1 align="center">Digital Root Calculator<sup><code>1.0</code></sup></h1>
+<h1 align="center">Digital Root Calculator<sup><code>1.0.1</code></sup></h1>
 
 > it's a simple interactive web app which is build by javascript and used the OOP (Object Oriented Programming) paradigm
 
@@ -11,7 +11,7 @@
 
 UML Diagram is [here](https://app.diagrams.net/?src=about#Hfahimfaisaal%2FdigitalRootCalculator%2Fmaster%2FUML.drawio)
 <br />
-[Live view](https://digitalrootcalculator.netlify.app//)
+[Live view](https://digitalrootcalculator.netlify.app)
 
 ## How to run on localhost
 
