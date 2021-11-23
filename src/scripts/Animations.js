@@ -38,9 +38,7 @@ class Animations {
         const rootLine = headingPaths.pop();
 
         this.introTimeline
-            .to(headingPaths, { strokeDashoffset: 0, stagger: .12, delay: 0.5 }) // headingDigits
-            .to(svg, { scale: 1.1, y: '0vh', ease: 'elastic(2.5, 3)' }) // headingScaleDown
-            .to(svg, { x: 0, ease: 'elastic(2.8, 3)' }) // headingMoveX
+            .to(headingPaths, { strokeDashoffset: 0, stagger: .10, ease: 'elastic(2.5, 3)' }) // headingDigits
             .to(rootLine, { strokeDashoffset: 0 }, '-=1') //root
             .to(input, { scaleX: 1, y: -15, onComplete: this.placeholderAnimation }) // scale up the inputBox
             .to(resultLetters, { opacity: 1, stagger: .2, duration: 0.8 }, '-=1') // result heading fade in
